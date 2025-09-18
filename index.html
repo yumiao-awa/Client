@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鱼喵Client ·</title>
+    <link rel="icon" href="image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+CjxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjIwIiBmaWxsPSIjNDM2MWVlIiAvPgo8cGF0aCBkPSJNMTggMjVsLTUgNUwxOCAzMGwxMCA1eiIgZmlsbD0id2hpdGUiIC8+CjxjaXJjbGUgY3g9IjE4IiBjeT0iMjMiIHI9IjIiIGZpbGw9IndoaXRlIiAvPgo8L3N2Zz4K" type="image/svg+xml">
+    <style>
+        :root {
+            --brand: #4361ee;
+            --accent: #f72585;
+            --dark: #2d2d2d;
+            --light: #f9f9f9;
+            --bg-light: #ffffff;
+            --bg-dark: #1e1e1e;
+            --text-light: #333333;
+            --text-dark: #f0f0f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== Header ===== */
+        header {
+            padding: 20px 0;
+            background: var(--bg-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode header {
+            background: var(--bg-dark);
+            box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .brand {
+            color: var(--brand);
+        }
+
+        .theme-toggle {
+            background: var(--bg-light);
+            border: 1px solid #ddd;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: var(--bg-dark);
+            border-color: #444;
+            color: var(--text-dark);
+        }
+
+        .theme-toggle:hover {
+            background: var(--brand);
+            color: white;
+            border-color: var(--brand);
+        }
+
+        /* ===== Hero ===== */
+        main {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .preview-image img {
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 40px;
+            border: 1px solid #eee;
+            transition: box-shadow 0.3s;
+        }
+
+        body.dark-mode .preview-image img {
+            border-color: #333;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 60px;
+        }
+
+        /* ===== Showcase ===== */
+        .showcase-section {
+            padding: 60px 0;
+            background: var(--bg-light);
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode .showcase-section {
+            background: var(--bg-dark);
+        }
+
+        .showcase-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 50px;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .showcase-section h2 {
+            color: var(--text-dark);
+        }
+
+        .showcase-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .showcase-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .showcase-item img {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s;
+        }
+
+        body.dark-mode .showcase-item img {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .showcase-item img:hover {
+            transform: translateY(-5px);
+        }
+
+        .showcase-item .description {
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            padding: 0 10px;
+        }
+
+        .description-placeholder {
+            color: var(--accent);
+            font-style: italic;
+            padding: 20px;
+            background: rgba(247, 37, 133, 0.1);
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed var(--accent);
+        }
+
+        body.dark-mode .description-placeholder {
+            background: rgba(247, 37, 133, 0.2);
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: var(--bg-light);
+            color: var(--text-light);
+            padding: 60px 0 40px;
+            text-align: center;
+            margin-top: auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode footer {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        footer a {
+            color: var(--text-light);
+            text-decoration: none;
+            margin: 0 8px;
+            transition: color 0.2s;
+        }
+
+        body.dark-mode footer a {
+            color: var(--text-dark);
+        }
+
+        footer a:hover {
+            color: var(--brand);
+        }
+
+        .email {
+            color: #a0cfff;
+            font-weight: 500;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .showcase-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            .tagline {
+                font-size: 1.2rem;
+            }
+
+            footer p {
+                font-size: 0.95rem;
+            }
+
+            .theme-toggle {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <h1>鱼喵<span class="brand">Client</span></h1>
+            <button class="theme-toggle" id="themeToggle">🌙 暗色模式</button>
+        </div>
+    </header>
+
+    <!-- Hero Preview -->
+    <main>
+        <div class="container">
+            <div class="preview-image">
+                <img src="https://via.placeholder.com/1200x700/4361ee/ffffff?text=鱼喵Client+主界面预览" alt="鱼喵Client 预览图">
+            </div>
+            <p class="tagline">轻盈如鱼 · 灵动如喵</p>
+        </div>
+    </main>
+
+    <!-- Showcase Section -->
+    <section class="showcase-section">
+        <div class="container">
+            <h2>功能展示</h2>
+            
+            <!-- 第一组 -->
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <img src="https://via.placeholder.com/500x300/4361ee/ffffff?text=功能截图1" alt="功能截图1">
+                    <div class="description">
+                        <div class="description-placeholder">
+                            搭载完美透矿，挖矿无忧
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-item">
+                    <img src="https://via.placeholder.com/500x300/f72585/ffffff?text=功能截图2" alt="功能截图2">
+                    <div class="description">
+                        <div class="description-placeholder">
+                            简洁材质，让物品不再繁琐
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 第二组 -->
+            <div class="showcase-grid">
+                <div class="showcase-item">
+                    <img src="https://via.placeholder.com/500x300/4cc9f0/ffffff?text=功能截图3" alt="功能截图3">
+                    <div class="description">
+                        <div class="description-placeholder">
+                            UI控制面板
+                        </div>
+                    </div>
+                </div>
+                <div class="showcase-item">
+                    <img src="https://via.placeholder.com/500x300/560bad/ffffff?text=功能截图4" alt="功能截图4">
+                    <div class="description">
+                        <div class="description-placeholder">
+                            缩小内存，运行更流畅
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>联系我们：<span class="email">contact@yumiao-client.com</span></p>
+            <p>
+                <a href="https://github.com" target="_blank">GitHub-账号:yumiao-awa</a> · 
+                <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=lR9DjnwD34FGHV02KjaVEsvxbzXRI6dpu86PvN3HTdlkUFHiV%2B0OdtuEFVdV35Jc&busi_data=eyJncm91cENvZGUiOiIxMDQ3MjEyNzc2IiwidG9rZW4iOiJzQ2x4eXl2ZzF1SGpkQ3hNbjNSWU1yMlc2elhDMjNqR1JneHZIblBvZ0FYNkJ3RlpLMkRwSlpUYjlibDlqNVJjIiwidWluIjoiMjgyNTkyNDcwMyJ9&data=uk8YLSCOVn5e5Rs6rpPgHpkB-zcD2odP6SitffNG6hSSxE6lgyNVQZ-KZ_XoxZRREw8itHCpw-E1YCdzyZByLQ&svctype=4&tempid=h5_group_info" target="_blank">QQ</a> · 
+            </p>
+            <p class="copyright">鱼喵Client © 2025 — 让客户端更有趣</p>
+        </div>
+    </footer>
+
+    <script>
+        // 等待页面加载完成再绑定事件
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            // 检查本地存储的偏好设置
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                if (themeToggle) themeToggle.textContent = '☀️ 亮色模式';
+            }
+            
+            // 安全地绑定点击事件
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    body.classList.toggle('dark-mode');
+                    
+                    if (body.classList.contains('dark-mode')) {
+                        localStorage.setItem('darkMode', 'enabled');
+                        this.textContent = '☀️ 亮色模式';
+                    } else {
+                        localStorage.setItem('darkMode', 'disabled');
+                        this.textContent = '🌙 暗色模式';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
