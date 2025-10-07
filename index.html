@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鱼喵Client</title>
+    <link rel="icon" href="image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+CjxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjIwIiBmaWxsPSIjNDM2MWVlIiAvPgo8cGF0aCBkPSJNMTggMjVsLTUgNUwxOCAzMGwxMCA1eiIgZmlsbD0id2hpdGUiIC8+CjxjaXJjbGUgY3g9IjE4IiBjeT0iMjMiIHI9IjIiIGZpbGw9IndoaXRlIiAvPgo8L3N2Zz4K" type="image/svg+xml">
+    <style>
+        :root {
+            --brand: #4361ee;
+            --accent: #f72585;
+            --dark: #2d2d2d;
+            --light: #f9f9f9;
+            --bg-light: #ffffff;
+            --bg-dark: #1e1e1e;
+            --text-light: #333333;
+            --text-dark: #f0f0f0;
+            --card-border: #f0b040; /* 金色边框 */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg-light);
+            color: var(--text-light);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== Header ===== */
+        header {
+            padding: 20px 0;
+            background: var(--bg-light);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+
+        body.dark-mode header {
+            background: var(--bg-dark);
+            box-shadow: 0 2px 8px rgba(255,255,255,0.05);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        .brand {
+            color: var(--brand);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        body.dark-mode .nav-links a {
+            color: var(--text-dark);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--brand);
+        }
+
+        .theme-toggle {
+            background: var(--bg-light);
+            border: 1px solid #ddd;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+            margin-left: 20px;
+        }
+
+        body.dark-mode .theme-toggle {
+            background: var(--bg-dark);
+            border-color: #444;
+            color: var(--text-dark);
+        }
+
+        .theme-toggle:hover {
+            background: var(--brand);
+            color: white;
+            border-color: var(--brand);
+        }
+
+        /* ===== Section Styles ===== */
+        section {
+            display: none;
+            padding: 60px 0;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            color: var(--brand);
+        }
+
+        /* ===== Home Section ===== */
+        .hero {
+            text-align: center;
+        }
+
+        .preview-image img {
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 40px;
+            border: 1px solid #eee;
+            transition: box-shadow 0.3s;
+        }
+
+        body.dark-mode .preview-image img {
+            border-color: #333;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-size: 1.4rem;
+            color: var(--accent);
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 60px;
+        }
+
+        /* ===== Features Section ===== */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        body.dark-mode .feature-card {
+            background: var(--bg-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        body.dark-mode .feature-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .feature-card .feature-image {
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .feature-card .feature-image img {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--brand);
+        }
+
+        .feature-card p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        /* ===== Version Comparison ===== */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 40px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        }
+
+        body.dark-mode .comparison-table {
+            background: var(--bg-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        body.dark-mode .comparison-table th,
+        body.dark-mode .comparison-table td {
+            border-bottom: 1px solid #444;
+        }
+
+        .comparison-table th {
+            background: var(--brand);
+            color: white;
+            font-weight: 600;
+        }
+
+        .comparison-table .feature-name {
+            font-weight: 600;
+            text-align: left;
+            background: #f8f9fa;
+        }
+
+        body.dark-mode .comparison-table .feature-name {
+            background: #2a2a3a;
+        }
+
+        .comparison-table .available {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .comparison-table .unavailable {
+            color: #999;
+        }
+
+        /* ===== Hall of Fame Section  ===== */
+        .hall-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .hall-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-top: 4px solid var(--card-border); /* 顶部金色边框 */
+            cursor: pointer;
+        }
+
+        body.dark-mode .hall-card {
+            background: var(--bg-dark);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            border-top: 4px solid #f0b040;
+        }
+
+        .hall-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        body.dark-mode .hall-card:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .hall-card .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #f8f8f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .hall-card .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .hall-card .avatar .icon {
+            font-size: 24px;
+            color: #666;
+        }
+
+        .hall-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        body.dark-mode .hall-card h3 {
+            color: var(--text-dark);
+        }
+
+        .hall-card .description {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        body.dark-mode .hall-card .description {
+            color: #aaa;
+        }
+
+        .hall-card .contact {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            background: var(--bg-light);
+            color: var(--text-light);
+            padding: 60px 0 40px;
+            text-align: center;
+            margin-top: auto;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body.dark-mode footer {
+            background: var(--bg-dark);
+            color: var(--text-dark);
+        }
+
+        footer a {
+            color: var(--text-light);
+            text-decoration: none;
+            margin: 0 8px;
+            transition: color 0.2s;
+        }
+
+        body.dark-mode footer a {
+            color: var(--text-dark);
+        }
+
+        footer a:hover {
+            color: var(--brand);
+        }
+
+        .email {
+            color: #a0cfff;
+            font-weight: 500;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .theme-toggle {
+                margin-left: 0;
+                width: 100%;
+                max-width: 200px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <h1>鱼喵<span class="brand">Client</span></h1>
+            <div style="display: flex; align-items: center;">
+                <nav class="nav-links">
+                    <a href="#" class="nav-link active" data-section="home">主页</a>
+                    <a href="#" class="nav-link" data-section="features">功能介绍</a>
+                    <a href="#" class="nav-link" data-section="versions">版本对比</a>
+                    <a href="#" class="nav-link" data-section="hall">名人堂</a>
+                </nav>
+                <button class="theme-toggle" id="themeToggle">🌙 暗色模式</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Section (Original Content) -->
+    <section id="home" class="active">
+        <div class="container">
+            <div class="hero">
+                <div class="preview-image">
+                    <img src="images/preview-main.jpg" alt="鱼喵Client">
+                </div>
+                <p class="tagline">轻盈如鱼 · 灵动如喵</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section  -->
+    <section id="features">
+        <div class="container">
+            <h2 class="section-title">功能介绍</h2>
+            <div class="features-grid">
+                <a href="https://example.com/feature1" class="feature-card" target="_blank">
+                    <div class="feature-image">
+                        <img src="https://via.placeholder.com/300x200/4361ee/ffffff?text=功能截图1" alt="功能截图1">
+                    </div>
+                    <h3>可开关矿透</h3>
+                    <p>搭载完美透矿，挖矿无忧</p>
+                </a>
+                <a href="https://example.com/feature2" class="feature-card" target="_blank">
+                    <div class="feature-image">
+                        <img src="images/item.jpg" alt="功能截图2">
+                    </div>
+                    <h3>材质包</h3>
+                    <p>简洁材质，让物品不再繁琐</p>
+                </a>
+                <a href="https://example.com/feature3" class="feature-card" target="_blank">
+                    <div class="feature-image">
+                        <img src="images/UI.jpg" alt="功能截图3">
+                    </div>
+                    <h3>UI</h3>
+                    <p>采用UI控制面板，便于操作</p>
+                </a>
+                <a href="https://example.com/feature4" class="feature-card" target="_blank">
+                    <div class="feature-image">
+                        <img src="images/app.jpg" alt="功能截图4">
+                    </div>
+                    <h3>软件</h3>
+                    <p>缩小内存，运行更流畅</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Version Comparison Section -->
+    <section id="versions">
+        <div class="container">
+            <h2 class="section-title">版本对比</h2>
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>功能</th>
+                        <th>公益版</th>
+                        <th>付费版</th>
+                        <th>内测版</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="feature-name">基础功能</td>
+                        <td class="available">✓</td>
+                        <td class="available">✓</td>
+                        <td class="available">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">高级内容</td>
+                        <td class="unavailable">✗</td>
+                        <td class="available">✓</td>
+                        <td class="available">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">版本抢选</td>
+                        <td class="available">✓ (落后1个版本)</td>
+                        <td class="available">✓ (完成后体验)</td>
+                        <td class="available">✓ (立即体验)</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">理赔</td>
+                        <td class="unavailable">✗</td>
+                        <td class="unavailable">✗</td>
+                        <td class="available">✓</td>
+                    </tr>
+                    <tr>
+                        <td class="feature-name">价格</td>
+                        <td>免费</td>
+                        <td>¥10/月</td>
+                        <td>¥50/月</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Hall of Fame Section -->
+    <section id="hall">
+        <div class="container">
+            <h2 class="section-title">名人堂</h2>
+            <div class="hall-grid">
+                <a href="https://static.codemao.cn/coco/player/unstable/Byr_DoM6eg.image/jpeg?hash=Fhx4cHCuMmEBlwuD-nfZhJH-pQB6" class="hall-card" target="_blank">
+                    <div class="avatar">
+                        <div class="icon">👑</div>
+                    </div>
+                    <h3>满级小孩</h3>
+                    <div class="description">满口胡言乱语</div>
+                    <p>一位在Creative Client脏话出名的人</p>
+                    <div class="contact">@7788    QQ：2590397368</div>
+                </a>
+                        <div class="icon">⭐</div>
+                    </div>
+                    <h3>优秀贡献者</h3>
+                    <div class="description">为客户端做出了贡献</div>
+                    <p>为客户端做出了极大贡献</p>
+                    <div class="contact">@GTS白小鱼</div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>联系我们：<span class="email">contact@yumiao-client.com</span></p>
+            <p>
+                <a href="https://github.com" target="_blank">GitHub</a> · 
+                <a href="https://bilibili.com" target="_blank">B站</a> · 
+                <a href="https://weibo.com" target="_blank">微博</a>
+            </p>
+            <p class="copyright">鱼喵Client © 2025 — 让连接更有趣</p>
+        </div>
+    </footer>
+
+    <script>
+        // 暗色模式切换
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            if (localStorage.getItem('darkMode') === 'enabled') {
+                body.classList.add('dark-mode');
+                if (themeToggle) themeToggle.textContent = '☀️ 亮色模式';
+            }
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    body.classList.toggle('dark-mode');
+                    
+                    if (body.classList.contains('dark-mode')) {
+                        localStorage.setItem('darkMode', 'enabled');
+                        this.textContent = '☀️ 亮色模式';
+                    } else {
+                        localStorage.setItem('darkMode', 'disabled');
+                        this.textContent = '🌙 暗色模式';
+                    }
+                });
+            }
+
+            // 页面切换功能
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('section');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 更新导航状态
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 显示对应页面
+                    const targetSection = this.dataset.section;
+                    sections.forEach(section => {
+                        section.classList.remove('active');
+                        if (section.id === targetSection) {
+                            section.classList.add('active');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
