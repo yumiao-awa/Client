@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>名人堂 - 煜林服务器</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Helvetica Neue", "Microsoft YaHei", sans-serif;
+      background: #fafbfc;
+      color: #222;
+      line-height: 1.6;
+      padding: 0 20px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* 马卡龙蓝白渐变标题 */
+    .header-section {
+      background: linear-gradient(to bottom, #e6f0ff, #ffffff);
+      padding: 40px 20px 30px;
+      margin: -20px -20px 30px;
+      text-align: center;
+      border-bottom: 1px solid #e0e6f0;
+    }
+
+    .header-section h1 {
+      font-weight: 300;
+      font-size: 2.4rem;
+      letter-spacing: 2px;
+      color: #4a60b0;
+      text-shadow: 0 1px 2px rgba(255,255,255,0.6);
+    }
+
+    .divider {
+      height: 1px;
+      background: #e0e6f0;
+      margin: 28px 0;
+    }
+
+    /* 横向滑动头像区 */
+    .avatars-scroller {
+      display: flex;
+      overflow-x: auto;
+      padding: 10px 0 20px;
+      gap: 18px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .avatars-scroller::-webkit-scrollbar {
+      display: none;
+    }
+
+    .avatar-item {
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      opacity: 0.75;
+      transition: opacity 0.25s, transform 0.2s;
+      min-width: 80px;
+    }
+
+    .avatar-item:hover,
+    .avatar-item.active {
+      opacity: 1;
+      transform: scale(1.08);
+    }
+
+    .avatar-img {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #f0f4ff;
+      border: 2px solid #d0d8f0;
+    }
+
+    .avatar-name {
+      font-size: 0.9rem;
+      margin-top: 6px;
+      color: #5a6590;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80px;
+    }
+
+    /* 介绍展示区 */
+    #profile-content {
+      min-height: 80px;
+      padding: 20px 0;
+      text-align: center;
+    }
+
+    #profile-content h2 {
+      margin-bottom: 12px;
+      color: #3a4570;
+    }
+
+    #profile-content p,
+    #profile-content div {
+      max-width: 600px;
+      margin: 0 auto 16px;
+      color: #444;
+    }
+
+    #profile-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 14px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+
+    .player-data {
+      display: none;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 10px;
+      color: #777;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 600px) {
+      .header-section h1 {
+        font-size: 2rem;
+      }
+      .avatar-img {
+        width: 56px;
+        height: 56px;
+      }
+      .avatar-item {
+        min-width: 70px;
+      }
+      .avatar-name {
+        font-size: 0.85rem;
+        max-width: 70px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-section">
+    <h1>名人堂</h1>
+  </div>
+
+  <!-- 👇 你的玩家头像（横向滑动） -->
+  <div class="avatars-scroller">
+    <div class="avatar-item" data-target="mdd">
+      <img class="avatar-img" src="mdd/0.jpg" alt="麦当当">
+      <div class="avatar-name">麦当当</div>
+    </div>
+    <div class="avatar-item" data-target="yumiao">
+      <img class="avatar-img" src="yumiao/0.jpg" alt="小鱼喵">
+      <div class="avatar-name">小鱼喵</div>
+    </div>
+    <!-- ✅ 你可以在这里继续添加更多玩家 -->
+  </div>
+
+  <!-- 介绍展示区 -->
+  <div id="profile-content">
+    <!-- 初始为空 -->
+  </div>
+
+  <!-- 👇 你的玩家介绍（完全保留你写的 HTML） -->
+  <div id="mdd" class="player-data">
+    <h2>麦当当</h2>
+    <div>
+      服务器的服主，也是抽象冠军<br>
+      以皇帝自称，若不服从其命令就会被斩首……<br>
+      <img src="mdd/1.jpg" alt="麦当当">
+    </div>
+  </div>
+
+  <div id="yumiao" class="player-data">
+    <h2>小鱼喵</h2>
+    <div>
+      服务器的指令师，也是一名天才程序员<br>
+      服务器的相关网站的负责人，也是本网站的作者
+    </div>
+  </div>
+
+  <!-- ✅ 你可以继续添加更多介绍，例如：
+  <div id="xxx" class="player-data">
+    <h2>名字</h2>
+    <div>你的介绍（支持<br>和<img>）</div>
+  </div>
+  -->
+
+  <div class="divider"></div>
+  <footer>
+    煜林服务器 · 致敬每一位闪耀的你
+  </footer>
+
+  <script>
+    document.querySelectorAll('.avatar-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.avatar-item').forEach(el => el.classList.remove('active'));
+        this.classList.add('active');
+
+        const targetId = this.getAttribute('data-target');
+        const targetContent = document.getElementById(targetId);
+        const displayArea = document.getElementById('profile-content');
+        if (targetContent) {
+          displayArea.innerHTML = targetContent.innerHTML;
+        }
+      });
+    });
+  </script>
+</body>
+</html>
