@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -8,7 +7,7 @@
     <link rel="icon" href="icon.png">
     <link rel="stylesheet" href="css/index.css">
     <style>
-        /* ========== 字体切换功能（新增） ========== */
+        /* ========== 自定义字体 ========== */
         @font-face {
             font-family: "CustomFont";
             src: url("custom-font.ttf") format("truetype");
@@ -17,16 +16,7 @@
             font-display: swap;
         }
 
-        :root {
-            --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-            --font-custom: "CustomFont", var(--font-default);
-        }
-
-        body {
-            font-family: var(--font-current, var(--font-default));
-            transition: font-family 0.2s ease;
-        }
-
+        /* 字体选择菜单样式 */
         .font-toggle-container {
             position: relative;
             display: inline-block;
@@ -63,9 +53,8 @@
             background-color: #f0f0f0;
         }
 
-        /* 选中状态：蓝色 */
         .font-option.selected {
-            color: #4A90E2; /* 鱼喵Client风格蓝 */
+            color: #4A90E2;
             font-weight: bold;
         }
 
@@ -95,7 +84,6 @@
             <h1 class="font-toggle-container">
                 <span id="siteTitle">鱼喵<span class="brand">Client</span></span>
                 <div class="font-selector" id="fontSelector">
-                    <!-- 修改文字 -->
                     <div class="font-option" data-font="default">设备字体</div>
                     <div class="font-option" data-font="custom">圆体字</div>
                 </div>
@@ -112,7 +100,7 @@
         </div>
     </header>
 
-    <!-- Home Section (Original Content) -->
+    <!-- Home Section -->
     <section id="home" class="active">
         <div class="container">
             <div class="hero">
@@ -266,7 +254,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            // ========== 暗色模式 ==========
+            // 暗色模式
             const themeToggle = document.getElementById('themeToggle');
             const body = document.body;
 
@@ -278,17 +266,13 @@
             if (themeToggle) {
                 themeToggle.addEventListener('click', function () {
                     body.classList.toggle('dark-mode');
-                    if (body.classList.contains('dark-mode')) {
-                        localStorage.setItem('darkMode', 'enabled');
-                        this.textContent = '☀️ 亮色模式';
-                    } else {
-                        localStorage.setItem('darkMode', 'disabled');
-                        this.textContent = '🌙 暗色模式';
-                    }
+                    const isDark = body.classList.contains('dark-mode');
+                    localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+                    this.textContent = isDark ? '☀️ 亮色模式' : '🌙 暗色模式';
                 });
             }
 
-            // ========== 页面切换 ==========
+            // 页面切换
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('section');
 
@@ -297,28 +281,31 @@
                     e.preventDefault();
                     navLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
-                    sections.forEach(section => {
-                        section.classList.remove('active');
-                        if (section.id === this.dataset.section) {
-                            section.classList.add('active');
-                        }
+                    sections.forEach(sec => {
+                        sec.classList.toggle('active', sec.id === this.dataset.section);
                     });
                 });
             });
 
-            // ========== 字体切换 ==========
+            // 字体切换
             const siteTitle = document.getElementById('siteTitle');
             const fontSelector = document.getElementById('fontSelector');
             const fontOptions = document.querySelectorAll('.font-option');
-            const root = document.documentElement;
 
-            // 初始化选中状态（不设置字体，因为刷新后会自动应用）
+            // 初始化选中状态
             const savedFont = localStorage.getItem('selectedFont') || 'default';
             fontOptions.forEach(opt => {
                 if (opt.dataset.font === savedFont) {
                     opt.classList.add('selected');
                 }
             });
+
+            // 应用字体：设备字体 = 不设 font-family；圆体字 = 设自定义字体
+            if (savedFont === 'custom') {
+                body.style.fontFamily = `"CustomFont", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif`;
+            } else {
+                body.style.fontFamily = '';
+            }
 
             // 点击标题显示菜单
             if (siteTitle) {
@@ -334,7 +321,6 @@
                     e.stopPropagation();
                     const fontType = this.dataset.font;
                     localStorage.setItem('selectedFont', fontType);
-                    // 刷新页面以确保字体正确应用（尤其首次加载 custom-font）
                     location.reload();
                 });
             });
@@ -343,12 +329,6 @@
             document.addEventListener('click', function () {
                 fontSelector.classList.remove('active');
             });
-
-            // 应用字体（仅在非刷新初始化时用于预览，但我们现在选择刷新，所以此处可简化）
-            // 实际上，刷新后会重新执行整个脚本，因此只需在 :root 设置 --font-current 即可
-            const fontDefault = `-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif`;
-            const fontCustom = `"CustomFont", ${fontDefault}`;
-            root.style.setProperty('--font-current', savedFont === 'custom' ? fontCustom : fontDefault);
         });
     </script>
 </body>
