@@ -4,14 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>鱼喵Client</title>
-    <link rel="icon" href="image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+CjxjaXJjbGUgY3g9IjI1IiBjeT0iMjUiIHI9IjIwIiBmaWxsPSIjNDM2MWVlIiAvPgo8cGF0aCBkPSJNMTggMjVsLTUgNUwxOCAzMGwxMCA1eiIgZmlsbD0id2hpdGUiIC8+CjxjaXJjbGUgY3g9IjE4IiBjeT0iMjMiIHI9IjIiIGZpbGw9IndoaXRlIiAvPgo8L3N2Zz4K" type="image/svg+xml">
+    <link rel="icon" href="icon.png">
     <link rel="stylesheet" href="css/index.css">
+    <style>
+        /* ========== 字体切换功能（新增） ========== */
+        @font-face {
+            font-family: "CustomFont";
+            src: url("../fonts/custom-font.ttf") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        :root {
+            --font-default: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+            --font-custom: "CustomFont", var(--font-default);
+        }
+
+        body {
+            font-family: var(--font-current, var(--font-default));
+            transition: font-family 0.2s ease;
+        }
+
+        .font-toggle-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .font-selector {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            flex-direction: column;
+            min-width: 120px;
+            margin-top: 4px;
+        }
+
+        .font-selector.active {
+            display: flex;
+        }
+
+        .font-option {
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .font-option:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* 暗色模式适配 */
+        body.dark-mode .font-selector {
+            background: #2d2d2d;
+            border-color: #555;
+        }
+
+        body.dark-mode .font-option {
+            color: #eee;
+        }
+
+        body.dark-mode .font-option:hover {
+            background-color: #444;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header>
         <div class="container header-container">
-            <h1>鱼喵<span class="brand">Client</span></h1>
+            <h1 class="font-toggle-container">
+                <span id="siteTitle">鱼喵<span class="brand">Client</span></span>
+                <div class="font-selector" id="fontSelector">
+                    <div class="font-option" data-font="default">默认字体</div>
+                    <div class="font-option" data-font="custom">自定义字体</div>
+                </div>
+            </h1>
             <div style="display: flex; align-items: center;">
                 <nav class="nav-links">
                     <a href="#" class="nav-link active" data-section="home">主页</a>
@@ -36,7 +112,7 @@
         </div>
     </section>
 
-    <!-- Features Section  -->
+    <!-- Features Section -->
     <section id="features">
         <div class="container">
             <h2 class="section-title">功能介绍</h2>
@@ -124,45 +200,45 @@
 
     <!-- Hall of Fame Section -->
     <section id="hall">
-<div class="container">
-    <h2 class="section-title">名人堂</h2>
-
-    <!-- 核心贡献者 -->
-    <div class="hall-grid">
-        <a href="https://static.codemao.cn/coco/player/unstable/Byr_DoM6eg.image/jpeg?hash=Fhx4cHCuMmEBlwuD-nfZhJH-pQB6" class="hall-card" target="_blank">
-            <div class="avatar">
-                <div class="icon">👑</div>
+        <div class="container">
+            <h2 class="section-title">名人堂</h2>
+            <!-- 核心贡献者 -->
+            <div class="hall-grid">
+                <a href="https://static.codemao.cn/coco/player/unstable/Byr_DoM6eg.image/jpeg?hash=Fhx4cHCuMmEBlwuD-nfZhJH-pQB6" class="hall-card" target="_blank">
+                    <div class="avatar">
+                        <div class="icon">👑</div>
+                    </div>
+                    <h3>满级小孩哥</h3>
+                    <div class="description">满口胡言乱语</div>
+                    <p>一个在Creative Client骂出名的小学生</p>
+                    <div class="contact">@7788 QQ：2590397368</div>
+                </a>
+                <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=%2Fr9u14zdLl9ykvK8Uhff3bWe6z19ZKusw3anfGWtJ3aJrosu7HdDV4yKO064uvx6&busi_data=eyJncm91cENvZGUiOiIxMDQ3MjEyNzc2IiwidG9rZW4iOiJhbWFvbUhVbHU1VW9uc2JCa2ZsbjVLRWh3TGZ0S1pPR21PaE51UlpPaEVJQlNLYU5xekl6dEU4aDBrY2p4cGdvIiwidWluIjoiMjgyNTkyNDcwMyJ9&data=U_yLnbIFPDWxzGdXROIIsR9dVpMUf8So8zorBqXIRfbvvQSRuT3Zmb_gtfbGI3tvQ3KcLpglRuYY5Gu6f1p2yg&svctype=4&tempid=h5_group_info" class="hall-card" target="_blank">
+                    <div class="avatar">
+                        <div class="icon">⭐</div>
+                    </div>
+                    <h3>优秀贡献者</h3>
+                    <div class="description">为客户端做出了贡献</div>
+                    <p>为客户端做出了极大贡献</p>
+                    <div class="contact">@GTS白小鱼</div>
+                </a>
             </div>
-            <h3>满级小孩哥</h3>
-            <div class="description">满口胡言乱语</div>
-            <p>一个在Creative Client骂出名的小学生</p>
-            <div class="contact">@7788    QQ：2590397368</div>
-        </a>
-        <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=%2Fr9u14zdLl9ykvK8Uhff3bWe6z19ZKusw3anfGWtJ3aJrosu7HdDV4yKO064uvx6&busi_data=eyJncm91cENvZGUiOiIxMDQ3MjEyNzc2IiwidG9rZW4iOiJhbWFvbUhVbHU1VW9uc2JCa2ZsbjVLRWh3TGZ0S1pPR21PaE51UlpPaEVJQlNLYU5xekl6dEU4aDBrY2p4cGdvIiwidWluIjoiMjgyNTkyNDcwMyJ9&data=U_yLnbIFPDWxzGdXROIIsR9dVpMUf8So8zorBqXIRfbvvQSRuT3Zmb_gtfbGI3tvQ3KcLpglRuYY5Gu6f1p2yg&svctype=4&tempid=h5_group_info" class="hall-card" target="_blank">
-            <div class="avatar">
-                <div class="icon">⭐</div>
+            <!-- 其他分区 -->
+            <h3 class="hall-subtitle">其他</h3>
+            <div class="hall-grid">
+                <a href="https://static.codemao.cn/coco/player/unstable/SJs2Y1VKj.video/mp4?hash=ltLoiT7wjjr5ie-TwmS6sNa3WVdC" class="hall-card" target="_blank">
+                    <div class="avatar">
+                        <div class="icon">
+                            <img src="https://static.codemao.cn/coco/player/unstable/rylk-9Upll.image/jpeg?hash=Fon4NaMr2oF2Tf4dXflLgw_xU-6A" alt="codemao图标">
+                        </div>
+                    </div>
+                    <h3>点猫科技宣传片</h3>
+                    <div class="description">点猫科技</div>
+                    <p>跳转卡片</p>
+                    <div class="contact">@点猫科技</div>
+                </a>
             </div>
-            <h3>优秀贡献者</h3>
-            <div class="description">为客户端做出了贡献</div>
-            <p>为客户端做出了极大贡献</p>
-            <div class="contact">@GTS白小鱼</div>
-        </a>
-    </div>
-
-    <!-- 其他分区 -->
-    <h3 class="hall-subtitle">其他</h3>
-    <div class="hall-grid">
-        <a href="https://static.codemao.cn/coco/player/unstable/SJs2Y1VKj.video/mp4?hash=ltLoiT7wjjr5ie-TwmS6sNa3WVdC" class="hall-card" target="_blank">
-            <div class="avatar">
-                <div class="icon"><img src="https://static.codemao.cn/coco/player/unstable/rylk-9Upll.image/jpeg?hash=Fon4NaMr2oF2Tf4dXflLgw_xU-6A" alt="codemao图标"></div>
-            </div>
-            <h3>点猫科技宣传片</h3>
-            <div class="description">点猫科技</div>
-            <p>跳转卡片</p>
-            <div class="contact">@点猫科技</div>
-        </a>
-    </div>
-</div>
+        </div>
     </section>
 
     <!-- Footer -->
@@ -170,8 +246,8 @@
         <div class="container">
             <p>联系我们：<span class="email">contact-2825925703@qq.com</span></p>
             <p>
-                <a href="https://github.com/yumiao-awa/Client" target="_blank">GitHub</a> · 
-                <a href="https://bilibili.com" target="_blank">B站</a> · 
+                <a href="https://github.com/yumiao-awa/Client" target="_blank">GitHub</a> ·
+                <a href="https://bilibili.com" target="_blank">B站</a> ·
                 <a href="https://qun.qq.com/universal-share/share?ac=1&authKey=%2Fr9u14zdLl9ykvK8Uhff3bWe6z19ZKusw3anfGWtJ3aJrosu7HdDV4yKO064uvx6&busi_data=eyJncm91cENvZGUiOiIxMDQ3MjEyNzc2IiwidG9rZW4iOiJhbWFvbUhVbHU1VW9uc2JCa2ZsbjVLRWh3TGZ0S1pPR21PaE51UlpPaEVJQlNLYU5xekl6dEU4aDBrY2p4cGdvIiwidWluIjoiMjgyNTkyNDcwMyJ9&data=U_yLnbIFPDWxzGdXROIIsR9dVpMUf8So8zorBqXIRfbvvQSRuT3Zmb_gtfbGI3tvQ3KcLpglRuYY5Gu6f1p2yg&svctype=4&tempid=h5_group_info" target="_blank">QQ</a>
             </p>
             <p class="copyright">鱼喵Client © 2025 — 让客户端更有趣</p>
@@ -179,20 +255,20 @@
     </footer>
 
     <script>
-        // 暗色模式切换
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            // ========== 暗色模式切换 ==========
             const themeToggle = document.getElementById('themeToggle');
             const body = document.body;
-            
+
             if (localStorage.getItem('darkMode') === 'enabled') {
                 body.classList.add('dark-mode');
                 if (themeToggle) themeToggle.textContent = '☀️ 亮色模式';
             }
-            
+
             if (themeToggle) {
-                themeToggle.addEventListener('click', function() {
+                themeToggle.addEventListener('click', function () {
                     body.classList.toggle('dark-mode');
-                    
+
                     if (body.classList.contains('dark-mode')) {
                         localStorage.setItem('darkMode', 'enabled');
                         this.textContent = '☀️ 亮色模式';
@@ -203,18 +279,18 @@
                 });
             }
 
-            // 页面切换功能
+            // ========== 页面切换功能 ==========
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('section');
 
             navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
+                link.addEventListener('click', function (e) {
                     e.preventDefault();
-                    
+
                     // 更新导航状态
                     navLinks.forEach(l => l.classList.remove('active'));
                     this.classList.add('active');
-                    
+
                     // 显示对应页面
                     const targetSection = this.dataset.section;
                     sections.forEach(section => {
@@ -224,6 +300,36 @@
                         }
                     });
                 });
+            });
+
+            // ========== 字体切换功能 ==========
+            const siteTitle = document.getElementById('siteTitle');
+            const fontSelector = document.getElementById('fontSelector');
+            const fontOptions = document.querySelectorAll('.font-option');
+            const root = document.documentElement;
+
+            const savedFont = localStorage.getItem('selectedFont') || 'default';
+            root.style.setProperty('--font-current', savedFont === 'custom' ? 'var(--font-custom)' : 'var(--font-default)');
+
+            if (siteTitle) {
+                siteTitle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    fontSelector.classList.toggle('active');
+                });
+            }
+
+            fontOptions.forEach(option => {
+                option.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const fontType = this.dataset.font;
+                    localStorage.setItem('selectedFont', fontType);
+                    root.style.setProperty('--font-current', fontType === 'custom' ? 'var(--font-custom)' : 'var(--font-default)');
+                    fontSelector.classList.remove('active');
+                });
+            });
+
+            document.addEventListener('click', function () {
+                fontSelector.classList.remove('active');
             });
         });
     </script>
