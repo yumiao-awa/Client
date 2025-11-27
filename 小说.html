@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>鱼喵往事 · 小说集</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Songti SC", "SimSun", "Microsoft YaHei", serif;
+      background: #fff;
+      color: #000;
+      line-height: 1.8;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .book-title {
+      text-align: center;
+      font-size: 1.8rem;
+      font-weight: bold;
+      margin: 30px 0 40px;
+      letter-spacing: 3px;
+    }
+
+    .chapter-content {
+      min-height: 50vh;
+      text-indent: 2em;
+      font-size: 1.1rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .divider {
+      height: 1px;
+      background: #000;
+      margin: 30px 0;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 24px;
+      background: #000;
+      color: #fff;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 30px;
+      transition: opacity 0.2s;
+    }
+
+    .btn:hover:not(.disabled) {
+      opacity: 0.8;
+    }
+
+    .btn.disabled {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      opacity: 1;
+    }
+
+    .chapter-info {
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-align: center;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .loading {
+      text-align: center;
+      color: #666;
+      font-style: italic;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 15px; }
+      .book-title { font-size: 1.5rem; margin: 20px 0 30px; }
+      .btn { padding: 8px 20px; font-size: 0.95rem; }
+      .chapter-info { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="book-title">星尘旅人</div>
+
+  <div class="divider"></div>
+
+  <div class="chapter-content" id="content">
+    <div class="loading">正在加载……</div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="controls">
+    <a href="#" id="prev" class="btn disabled">上一章</a>
+    <div class="chapter-info" id="info">——</div>
+    <a href="#" id="next" class="btn">下一章</a>
+  </div>
+
+  <script>
+    // ✅✅✅【核心】在此处预定义所有章节信息✅✅✅
+    const CHAPTERS = [
+      {
+        title: "序章 云鲸城之初",
+        file: "chapters/00.txt"
+      },
+      {
+        title: "第一章 星辰低语",
+        file: "chapters/01.txt"
+      },
+      {
+        title: "第二章 机械之心",
+        file: "chapters/02.txt"
+      },
+      {
+        title: "第三章 雪夜列车",
+        file: "chapters/03.txt"
+      },
+      {
+        title: "终章 归星",
+        file: "chapters/04.txt"
+      }
+      // 👆 按此格式继续添加……
+    ];
+
+    // 状态
+    let currentChapterIndex = 0; // 从 0 开始
+
+    // 更新按钮与标题
+    function updateUI() {
+      const prevBtn = document.getElementById('prev');
+      const nextBtn = document.getElementById('next');
+      const infoEl = document.getElementById('info');
+
+      // 更新章节标题显示
+      infoEl.textContent = CHAPTERS[currentChapterIndex].title;
+
+      // 上一章按钮
+      if (currentChapterIndex === 0) {
+        prevBtn.classList.add('disabled');
+        prevBtn.setAttribute('aria-disabled', 'true');
+      } else {
+        prevBtn.classList.remove('disabled');
+        prevBtn.removeAttribute('aria-disabled');
+      }
+
+      // 下一章按钮
+      if (currentChapterIndex === CHAPTERS.length - 1) {
+        nextBtn.classList.add('disabled');
+        nextBtn.setAttribute('aria-disabled', 'true');
+      } else {
+        nextBtn.classList.remove('disabled');
+        nextBtn.removeAttribute('aria-disabled');
+      }
+    }
+
+    // 加载指定章节
+    function loadChapter(index) {
+      const chapter = CHAPTERS[index];
+      const contentEl = document.getElementById('content');
+      contentEl.innerHTML = `<div class="loading">正在加载《${chapter.title}》……</div>`;
+
+      fetch(chapter.file)
+        .then(response => {
+          if (!response.ok) throw new Error(`文件未找到: ${chapter.file}`);
+          return response.text();
+        })
+        .then(text => {
+          // 清理文本
+          const clean = text
+            .replace(/^\uFEFF/, '')
+            .replace(/\r\n/g, '\n')
+            .trim();
+          contentEl.textContent = clean;
+          currentChapterIndex = index;
+          updateUI();
+        })
+        .catch(err => {
+          contentEl.innerHTML = `<div style="color:red;">⚠️ 加载失败：<br>${err.message}</div>`;
+          console.error(err);
+        });
+    }
+
+    // 绑定按钮事件
+    document.getElementById('prev').addEventListener('click', e => {
+      e.preventDefault();
+      if (!e.target.classList.contains('disabled')) {
+        loadChapter(currentChapterIndex - 1);
+      }
+    });
+
+    document.getElementById('next').addEventListener('click', e => {
+      e.preventDefault();
+      if (!e.target.classList.contains('disabled')) {
+        loadChapter(currentChapterIndex + 1);
+      }
+    });
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      // 可选：从 URL 参数读取初始章节，如 ?ch=2
+      const urlParams = new URLSearchParams(window.location.search);
+      const initIndex = parseInt(urlParams.get('ch')) - 1; // ch=1 → index=0
+      if (initIndex >= 0 && initIndex < CHAPTERS.length) {
+        currentChapterIndex = initIndex;
+      }
+      loadChapter(currentChapterIndex);
+    });
+  </script>
+</body>
+</html>
