@@ -12,88 +12,206 @@
     }
 
     body {
-      font-family: "Songti SC", "SimSun", "Microsoft YaHei", serif;
-      background: #fff;
-      color: #000;
-      line-height: 1.8;
-      padding: 20px;
-      max-width: 800px;
+      /* 优先使用系统 UI 字体，仅在必要时 fallback 中文字体 */
+      font-family:
+        -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", "Hiragino Sans GB",
+        "Microsoft YaHei", sans-serif;
+      background: #f0f8ff; /* AliceBlue 淡蓝 */
+      color: #333;
+      line-height: 1.75;
+      padding: 20px 16px;
+      max-width: 760px;
       margin: 0 auto;
     }
 
+    /* —————— 标题区 —————— */
     .book-title {
       text-align: center;
       font-size: 1.8rem;
       font-weight: bold;
-      margin: 30px 0 40px;
-      letter-spacing: 3px;
+      margin: 24px 0 28px;
+      letter-spacing: 2px;
+      color: #2c5aa0;
+      position: relative;
+    }
+
+    /* 猫耳轮廓图标（SVG inline） */
+    .book-title::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: -24px;
+      transform: translateX(-50%);
+      width: 48px;
+      height: 24px;
+      background: 
+        radial-gradient(circle at 25% 0%, transparent 60%, #4a7bc2 61%),
+        radial-gradient(circle at 75% 0%, transparent 60%, #4a7bc2 61%),
+        linear-gradient(to bottom, #4a7bc2 0%, #4a7bc2 70%, transparent 70%);
+      clip-path: polygon(0 100%, 20% 0%, 50% 60%, 80% 0%, 100% 100%);
+      border-radius: 0 0 4px 4px;
+    }
+
+    /* —————— 分隔线（带小星球点缀） —————— */
+    .divider {
+      height: 24px;
+      position: relative;
+      margin: 28px 0;
+    }
+
+    .divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px; height: 8px;
+      background: #ffd700;
+      border-radius: 50%;
+      box-shadow: 
+        0 0 0 2px #fff,
+        0 0 0 4px rgba(255, 215, 0, 0.3),
+        -60px 0 0 2px #a8d0ff,
+        60px 0 0 2px #a8d0ff,
+        0 -40px 0 1px #c0e0ff;
+    }
+
+    /* —————— 内容卡片 —————— */
+    .chapter-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 
+        0 4px 12px rgba(0, 60, 120, 0.06),
+        0 1px 2px rgba(0, 0, 0, 0.03);
+      transition: all 0.3s ease;
+    }
+
+    .chapter-card:hover {
+      box-shadow: 
+        0 6px 16px rgba(0, 60, 120, 0.1),
+        0 2px 4px rgba(0, 0, 0, 0.05);
+      transform: translateY(-2px);
     }
 
     .chapter-content {
       min-height: 50vh;
       text-indent: 2em;
-      font-size: 1.1rem;
+      font-size: 1.12rem;
       white-space: pre-wrap;
       word-break: break-word;
+      color: #222;
     }
 
-    .divider {
-      height: 1px;
-      background: #000;
-      margin: 30px 0;
-    }
-
+    /* —————— 控制栏 —————— */
     .controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 14px;
+      margin-top: 20px;
     }
 
     .btn {
-      display: inline-block;
-      padding: 10px 24px;
-      background: #000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 28px;
+      background: linear-gradient(135deg, #6a99d6, #4a7bc2);
       color: #fff;
       text-decoration: none;
       font-weight: bold;
-      border-radius: 30px;
-      transition: opacity 0.2s;
+      border-radius: 50px;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 10px rgba(74, 123, 194, 0.25);
+      min-width: 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
 
-    .btn:hover:not(.disabled) {
-      opacity: 0.8;
+    .btn::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      opacity: 0;
+      transition: opacity 0.3s;
     }
 
-    .btn.disabled {
-      background: #ccc;
-      color: #666;
-      cursor: not-allowed;
+    .btn:hover:not(.disabled)::after {
       opacity: 1;
     }
 
+    .btn:active:not(.disabled) {
+      transform: scale(0.97);
+      box-shadow: 0 2px 6px rgba(74, 123, 194, 0.2);
+    }
+
+    .btn.disabled {
+      background: #d0d8e8;
+      color: #8899aa;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
     .chapter-info {
-      font-weight: bold;
-      font-size: 1.1rem;
+      font-weight: 600;
+      font-size: 1.05rem;
       text-align: center;
       flex: 1;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+      color: #4a6ba5;
+      padding: 0 12px;
     }
 
+    /* —————— 加载动效（小火箭旋转，无 emoji） —————— */
     .loading {
       text-align: center;
-      color: #666;
+      color: #6a7b99;
       font-style: italic;
+      font-size: 1.05rem;
+      opacity: 0;
+      animation: fadeIn 0.6s ease-out forwards;
     }
 
+    .loading::before {
+      content: "";
+      display: inline-block;
+      width: 16px; height: 16px;
+      margin-right: 8px;
+      vertical-align: middle;
+      background: #4a7bc2;
+      clip-path: polygon(0 50%, 60% 0, 100% 50%, 60% 100%);
+      animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* —————— 响应式 —————— */
     @media (max-width: 600px) {
-      body { padding: 15px; }
-      .book-title { font-size: 1.5rem; margin: 20px 0 30px; }
-      .btn { padding: 8px 20px; font-size: 0.95rem; }
-      .chapter-info { font-size: 1rem; }
+      body { padding: 16px 12px; }
+      .book-title { font-size: 1.5rem; margin: 16px 0 20px; }
+      .book-title::before { width: 40px; height: 20px; top: -20px; }
+      .chapter-card { padding: 20px 16px; }
+      .btn { padding: 10px 22px; font-size: 0.95rem; }
+      .chapter-info { font-size: 0.95rem; }
+      .divider::before {
+        width: 6px; height: 6px;
+        -60px 0, 60px 0 → -40px 0, 40px 0;
+      }
     }
   </style>
 </head>
@@ -103,68 +221,41 @@
 
   <div class="divider"></div>
 
-  <div class="chapter-content" id="content">
-    <div class="loading">正在加载……</div>
+  <div class="chapter-card">
+    <div class="chapter-content" id="content">
+      <div class="loading">正在加载……</div>
+    </div>
   </div>
 
   <div class="divider"></div>
 
   <div class="controls">
-    <a href="#" id="prev" class="btn disabled">上一章</a>
+    <a href="#" id="prev" class="btn disabled">◀ 上一章</a>
     <div class="chapter-info" id="info">——</div>
-    <a href="#" id="next" class="btn">下一章</a>
+    <a href="#" id="next" class="btn">下一章 ▶</a>
   </div>
 
   <script>
-    // ✅✅✅【核心】在此处预定义所有章节信息✅✅✅
     const CHAPTERS = [
-      {
-        title: "序章 云鲸城之初",
-        file: "00.txt"
-      },
-      {
-        title: "第一章 星辰低语",
-        file: "01.txt"},
-        {
-        title: "第二章 静语回响",
-        file: "02.txt"},
-       {
-        title: "第三章 泉心低语",
-        file: "03.txt"}
+      { title: "序章 云鲸城之初", file: "00.txt" },
+      { title: "第一章 星辰低语", file: "01.txt" },
+      { title: "第二章 静语回响", file: "02.txt" },
+      { title: "第三章 泉心低语", file: "03.txt" }
     ];
 
-    // 状态
-    let currentChapterIndex = 0; // 从 0 开始
+    let currentChapterIndex = 0;
 
-    // 更新按钮与标题
     function updateUI() {
       const prevBtn = document.getElementById('prev');
       const nextBtn = document.getElementById('next');
       const infoEl = document.getElementById('info');
 
-      // 更新章节标题显示
       infoEl.textContent = CHAPTERS[currentChapterIndex].title;
 
-      // 上一章按钮
-      if (currentChapterIndex === 0) {
-        prevBtn.classList.add('disabled');
-        prevBtn.setAttribute('aria-disabled', 'true');
-      } else {
-        prevBtn.classList.remove('disabled');
-        prevBtn.removeAttribute('aria-disabled');
-      }
-
-      // 下一章按钮
-      if (currentChapterIndex === CHAPTERS.length - 1) {
-        nextBtn.classList.add('disabled');
-        nextBtn.setAttribute('aria-disabled', 'true');
-      } else {
-        nextBtn.classList.remove('disabled');
-        nextBtn.removeAttribute('aria-disabled');
-      }
+      prevBtn.classList.toggle('disabled', currentChapterIndex === 0);
+      nextBtn.classList.toggle('disabled', currentChapterIndex === CHAPTERS.length - 1);
     }
 
-    // 加载指定章节
     function loadChapter(index) {
       const chapter = CHAPTERS[index];
       const contentEl = document.getElementById('content');
@@ -176,7 +267,6 @@
           return response.text();
         })
         .then(text => {
-          // 清理文本
           const clean = text
             .replace(/^\uFEFF/, '')
             .replace(/\r\n/g, '\n')
@@ -186,19 +276,17 @@
           updateUI();
         })
         .catch(err => {
-          contentEl.innerHTML = `<div style="color:red;">⚠️ 加载失败：<br>${err.message}</div>`;
+          contentEl.innerHTML = `<div style="color:#c0392b;text-align:center;">⚠ 加载失败：<br>${err.message}</div>`;
           console.error(err);
         });
     }
 
-    // 绑定按钮事件
     document.getElementById('prev').addEventListener('click', e => {
       e.preventDefault();
       if (!e.target.classList.contains('disabled')) {
         loadChapter(currentChapterIndex - 1);
       }
     });
-
     document.getElementById('next').addEventListener('click', e => {
       e.preventDefault();
       if (!e.target.classList.contains('disabled')) {
@@ -206,11 +294,9 @@
       }
     });
 
-    // 初始化
     document.addEventListener('DOMContentLoaded', () => {
-      // 可选：从 URL 参数读取初始章节，如 ?ch=2
       const urlParams = new URLSearchParams(window.location.search);
-      const initIndex = parseInt(urlParams.get('ch')) - 1; // ch=1 → index=0
+      const initIndex = parseInt(urlParams.get('ch')) - 1;
       if (initIndex >= 0 && initIndex < CHAPTERS.length) {
         currentChapterIndex = initIndex;
       }
