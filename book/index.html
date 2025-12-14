@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>小说选择</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f0f8ff;
+      color: #333;
+      overflow: hidden;
+      padding: 24px 12px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      max-width: 800px;
+    }
+
+    .card {
+      flex: 0 0 268px;
+      height: 400px;
+      background: #fff;
+      border-radius: 22px;
+      box-shadow: 0 8px 24px rgba(0, 60, 120, 0.09);
+      position: relative;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    /* ✅ 经典三段式：space-between */
+    .card-content {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between; /* 🌟 核心：标题-描述-按钮均匀分布 */
+      padding: 32px 28px;
+      pointer-events: auto;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #2c5aa0;
+      text-align: center;
+      /* 无 margin，由 space-between 控制间距 */
+    }
+
+    .card-desc {
+      font-size: 0.98rem;
+      color: #5a5a5a;
+      text-align: center;
+      line-height: 1.6;
+      flex: 1; /* 占据中间弹性空间 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      /* 可加 text-overflow 安全处理 */
+      overflow: hidden;
+    }
+
+    .select-btn {
+      padding: 12px 40px;
+      background: linear-gradient(135deg, #6a99d6, #4a7bc2);
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 4px 12px rgba(74, 123, 194, 0.35);
+      pointer-events: auto;
+      margin: 0;
+    }
+
+    .select-btn:hover {
+      transform: scale(1.04);
+      box-shadow: 0 6px 16px rgba(74, 123, 194, 0.45);
+    }
+
+    /* 中央高亮 */
+    .card.center {
+      transform: scale(1);
+      z-index: 20;
+      opacity: 1;
+    }
+
+    .card.center::before {
+      content: "";
+      position: absolute;
+      top: -36px; left: 50%;
+      transform: translateX(-50%);
+      width: 220px;
+      height: 36px;
+      background: radial-gradient(circle, rgba(106, 155, 214, 0.38), transparent 70%);
+      filter: blur(14px);
+      z-index: -1;
+    }
+
+    /* 侧卡 */
+    .card.left,
+    .card.right {
+      transform: scale(0.92);
+      opacity: 0.65;
+      z-index: 5;
+    }
+
+    .card.left {
+      margin-right: -52px;
+      clip-path: inset(0 0 0 75%);
+    }
+
+    .card.right {
+      margin-left: -52px;
+      clip-path: inset(0 75% 0 0);
+    }
+
+    .card:not(.center) .select-btn {
+      display: none;
+    }
+
+    .hint {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #8899aa;
+      margin-top: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .card { flex: 0 0 248px; height: 360px; }
+      .card-content { padding: 26px 20px; }
+      .card-title { font-size: 1.35rem; }
+      .card-desc { font-size: 0.92rem; }
+      .card.left { margin-right: -48px; }
+      .card.right { margin-left: -48px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="stage">
+    <div class="carousel">
+      <div class="card left"><div class="card-content"></div></div>
+      <div class="card center"><div class="card-content"></div></div>
+      <div class="card right"><div class="card-content"></div></div>
+    </div>
+  </div>
+
+  <div class="hint">点击左右卡片切换 · 点击「选择」开始阅读</div>
+
+  <script>
+    const NOVELS = [
+      { title: "鱼喵往事", desc: "曾经一只犯下错误的猫，以今生而不断改进", file: "yumiao" },
+      { title: "静语手记", desc: "考古学家在废弃空间站发现一台仍在运行的猫形终端，它守护着一段被删除的文明协议。", file: "reader.html?book=2" },
+      { title: "泉心低语", desc: "深海城邦中，共生体猫族通过共振波传递记忆。一只‘哑猫’却接收到了来自地核的异常信号。", file: "reader.html?book=3" },
+      { title: "星尘回响", desc: "流浪舰队的最后一艘船上，仅存的AI以猫的形态陪伴人类孩童。它开始梦见不属于自己的过去。", file: "reader.html?book=4" }
+    ];
+
+    let currentIndex = 0;
+    const getContent = cls => document.querySelector(`.card.${cls} .card-content`);
+
+    function render(el, novel) {
+      el.innerHTML = `
+        <div class="card-title">${novel.title}</div>
+        <div class="card-desc">${novel.desc}</div>
+        <button class="select-btn">选择</button>
+      `;
+    }
+
+    function update() {
+      const n = NOVELS.length;
+      [getContent('left'), getContent('center'), getContent('right')].forEach((el, i) => {
+        const idx = (currentIndex + i - 1 + n) % n;
+        render(el, NOVELS[idx]);
+      });
+
+      getContent('left').onclick = () => goTo((currentIndex - 1 + n) % n);
+      getContent('right').onclick = () => goTo((currentIndex + 1) % n);
+      getContent('center').querySelector('.select-btn').onclick = e => {
+        e.stopPropagation();
+        location.href = NOVELS[currentIndex].file;
+      };
+    }
+
+    function goTo(idx) {
+      currentIndex = idx;
+      document.querySelectorAll('.card').forEach(c => {
+        c.style.opacity = '0';
+        c.style.transform = 'scale(0.9)';
+      });
+      setTimeout(() => {
+        update();
+        document.querySelectorAll('.card').forEach(c => {
+          c.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
+          c.style.opacity = c.classList.contains('center') ? '1' : '0.65';
+          c.style.transform = c.classList.contains('center') ? 'scale(1)' : 'scale(0.92)';
+        });
+      }, 200);
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft') goTo((currentIndex - 1 + NOVELS.length) % NOVELS.length);
+      else if (e.key === 'ArrowRight') goTo((currentIndex + 1) % NOVELS.length);
+    });
+
+    document.addEventListener('DOMContentLoaded', update);
+  </script>
+</body>
+</html>
