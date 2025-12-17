@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
   <title>小说选择</title>
   <style>
     * {
@@ -11,24 +11,40 @@
       box-sizing: border-box;
     }
 
+    /* 🌟 关键修复：使用 dvh + safe-area */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       background: #f0f8ff;
       color: #333;
-      overflow: hidden;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      /* 禁止缩放，确保 scale 精准 */
+      /* 移除 flex，改用 #app 控制 */
     }
 
-    /* 🌟 核心：缩放容器 */
+    /* 🎯 核心：安全居中容器 */
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100dvh; /* ✅ 动态视口高度，排除浏览器 UI */
+      padding: 
+        env(safe-area-inset-top) 
+        env(safe-area-inset-right) 
+        env(safe-area-inset-bottom) 
+        env(safe-area-inset-left);
+      /* 保证在刘海屏/横条设备上不被遮挡 */
+    }
+
     .scale-container {
-      flex: 1;
+      flex: 0 0 auto; /* 不伸缩，靠 #app 居中 */
       display: flex;
       align-items: center;
       justify-content: center;
-      /* 初始缩放比例 = 当前视口宽 / 基准宽(390px) */
       transform-origin: center;
     }
 
@@ -37,11 +53,11 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      width: 800px; /* 固定逻辑宽度（3卡 × 268 + 间距） */
-      height: 500px; /* 固定逻辑高度 */
+      width: 800px;
+      height: 500px;
     }
 
-    /* 卡片（逻辑尺寸固定，靠 scale 缩放） */
+    /* 卡片样式（同前，保持不变） */
     .card {
       width: 268px;
       height: 400px;
@@ -67,7 +83,7 @@
     }
 
     .card-title {
-      font-size: 24px; /* 逻辑像素，将随 scale 缩放 */
+      font-size: 24px;
       font-weight: bold;
       color: #2c5aa0;
       text-align: center;
@@ -106,7 +122,6 @@
       box-shadow: 0 6px 16px rgba(74, 123, 194, 0.45);
     }
 
-    /* 高亮态 */
     .card.center {
       transform: scale(1);
       z-index: 20;
@@ -125,7 +140,6 @@
       z-index: -1;
     }
 
-    /* 侧卡 */
     .card.left,
     .card.right {
       transform: scale(0.92);
@@ -154,26 +168,26 @@
       margin-top: 12px;
     }
 
-    /* 防止 iOS 底部工具栏遮挡 */
+    /* 小屏微调 */
     @media (max-height: 600px) {
       .hint { margin-top: 6px; font-size: 13px; }
     }
   </style>
 </head>
 <body>
-
-  <div class="scale-container" id="scaleContainer">
-    <div class="carousel">
-      <div class="card left"><div class="card-content"></div></div>
-      <div class="card center"><div class="card-content"></div></div>
-      <div class="card right"><div class="card-content"></div></div>
+  <!-- 🌟 新增 #app 层，专注居中 -->
+  <div id="app">
+    <div class="scale-container" id="scaleContainer">
+      <div class="carousel">
+        <div class="card left"><div class="card-content"></div></div>
+        <div class="card center"><div class="card-content"></div></div>
+        <div class="card right"><div class="card-content"></div></div>
+      </div>
     </div>
+    <div class="hint">点击左右卡片切换 · 点击「选择」开始阅读</div>
   </div>
 
-  <div class="hint">点击左右卡片切换 · 点击「选择」开始阅读</div>
-
   <script>
-    // 📚 数据
     const NOVELS = [
       { title: "鱼喵往事", desc: "在浮空城云鲸之上，一只失忆机械猫聆听星辰低语，打捞沉没于数据海的往事。", file: "reader.html?book=1" },
       { title: "静语手记", desc: "考古学家在废弃空间站发现一台仍在运行的猫形终端，它守护着一段被删除的文明协议。", file: "reader.html?book=2" },
@@ -185,13 +199,10 @@
     const getContent = cls => document.querySelector(`.card.${cls} .card-content`);
     const scaleContainer = document.getElementById('scaleContainer');
 
-    // ✅ 核心：计算并应用缩放
     function updateScale() {
-      // 基准宽度：iPhone 13/14 竖屏 = 390px
       const baseWidth = 390;
-      const scale = Math.min(window.innerWidth / baseWidth, 1.2); // 最大放大 1.2x（桌面适配）
+      const scale = Math.min(window.innerWidth / baseWidth, 1.2);
       scaleContainer.style.transform = `scale(${scale})`;
-      scaleContainer.style.width = `${baseWidth}px`; // 固定逻辑宽，靠 scale 缩放
     }
 
     function render(el, novel) {
@@ -228,23 +239,17 @@
         document.querySelectorAll('.card').forEach(c => {
           c.style.transition = 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)';
           c.style.opacity = c.classList.contains('center') ? '1' : '0.65';
-          c.style.transform = c.classList.contains('center') 
-            ? 'scale(1)' 
-            : c.classList.contains('left') 
-              ? 'scale(0.92)' 
-              : 'scale(0.92)';
+          c.style.transform = c.classList.contains('center') ? 'scale(1)' : 'scale(0.92)';
         });
       }, 200);
     }
 
-    // 初始化
     document.addEventListener('DOMContentLoaded', () => {
       updateScale();
       updateCards();
       window.addEventListener('resize', updateScale);
     });
 
-    // 键盘支持
     document.addEventListener('keydown', e => {
       if (e.key === 'ArrowLeft') goTo((currentIndex - 1 + NOVELS.length) % NOVELS.length);
       else if (e.key === 'ArrowRight') goTo((currentIndex + 1) % NOVELS.length);
